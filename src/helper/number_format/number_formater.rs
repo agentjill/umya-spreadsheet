@@ -88,10 +88,14 @@ pub(crate) fn format_as_number<'input>(value: &f64, format: &'input str) -> Cow<
 
     let re = Regex::new(r"\$[^0-9]*").unwrap();
     if re.find(&format).ok().flatten().is_some() {
-        let mut item: Vec<String> = Vec::new();
-        for ite in re.captures(&format).ok().flatten().unwrap().iter() {
-            item.push(ite.unwrap().as_str().to_string());
-        }
+        let mut item: Vec<String> = re
+            .captures(&format)
+            .ok()
+            .flatten()
+            .unwrap()
+            .iter()
+            .map(|ite| ite.unwrap().as_str().to_string())
+            .collect();
         value = format!("{}{}", item.get(0).unwrap(), value);
         //    //  Currency or Accounting
         //    let currency_code = item.get(1).unwrap().to_string();
